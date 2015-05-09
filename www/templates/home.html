@@ -1,8 +1,19 @@
 <ion-view view-title="Home">
   <ion-content class="padding">
+   <div class = "background"></div>
    <button class="button button-royal" ng-click="getLocation()">Get Location</button>
-    {{lat}}
-    {{long}}
-    {{data}}
+    <!--{{lat}}-->
+    <!--{{long}}-->
+   <!--{{data}}-->
+   <ion-item ng-repeat="d in data['documents']">
+    <img ng-src ={{d.IMG_PRODUCT}} >
+    <h1>{{d.Name}}</h1>
+    <br>
+    <h2>{{d.Discount}}</h2>
+    <br>
+    {{d.Location}}
+   </ion-item>
+
+   <button class="button button-assertive" ng-click="stopWatch()">Redeem</button>
    </ion-content>
 </ion-view>

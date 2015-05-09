@@ -2,7 +2,7 @@ angular.module('starter.controllers', [])
 
 .controller('MainCtrl', function($scope) {})
 
-.controller('LocationCtrl', function($scope, $http, $cordovaGeolocation) {
+.controller('LocationCtrl', function($scope, $http, $cordovaGeolocation, $cordovaDeviceMotion) {
       console.log("In LocationCtrl")
       $scope.getLocation = function() {
       var posOptions = {timeout: 10000, enableHighAccuracy: false};
@@ -45,6 +45,64 @@ angular.module('starter.controllers', [])
             }
         }
     });
+        document.addEventListener("deviceready", function () {
+
+            $cordovaDeviceMotion.getCurrentAcceleration().then(function(result) {
+                var last_X = result.x;
+                var last_Y = result.y;
+                var last_Z = result.z;
+                var timeStamp = result.timestamp;
+            }, function(err) {
+                // An error occurred. Show a message to the user
+            });
+
+        }, false);
+
+
+        // watch Acceleration
+        var options = { frequency: 1000 };
+
+        document.addEventListener("deviceready", function () {
+
+            var watch = $cordovaDeviceMotion.watchAcceleration(options);
+            watch.then(
+                null,
+                function(error) {
+                    // An error occurred
+                },
+                function(result) {
+                    var X = result.x;
+                    var Y = result.y;
+                    var Z = result.z;
+                    var timeStamp = result.timestamp;
+                    //alert('abc')
+
+                    change_X = Math.abs(last_X - X);
+                    change_Y = Math.abs(last_Y - Y);
+                    change_Z = Math.abs(last_Z - Z);
+                    if (change_X > 0 || change_Y > 0 || change_Z > 0)   {
+                        alert('abc');
+                    }
+                }
+
+
+            );
+
+            $scope.stopWatch=function(watch) {
+                watch.clearWatch();
+            }
+        //
+        //    // OR
+        //    $cordovaDeviceMotion.clearWatch(watch)
+        //        .then(function(result) {
+        //            // success
+        //        }, function (error) {
+        //            // error
+        //        });
+        //
+        }, false);
+
+
     })
 
 .controller('ChatsCtrl', function($scope, $stateParams, Chats) {

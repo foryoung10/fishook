@@ -1,1 +1,9 @@
-/* Empty. Add your own CSS if you like */
+.background {
+    background: url('../img/background.png') no-repeat center;
+}
+.scroll-content {
+    background-image: url('../img/background.png');
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+}
