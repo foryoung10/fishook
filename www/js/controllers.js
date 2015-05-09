@@ -2,8 +2,8 @@ angular.module('starter.controllers', [])
 
 .controller('MainCtrl', function($scope) {})
 
-.controller('LocationCtrl', function($scope, $cordovaGeolocation) {
-
+.controller('LocationCtrl', function($scope, $http, $cordovaGeolocation) {
+      console.log("In LocationCtrl")
       $scope.getLocation = function() {
       var posOptions = {timeout: 10000, enableHighAccuracy: false};
       $cordovaGeolocation
@@ -22,10 +22,33 @@ angular.module('starter.controllers', [])
         enableHighAccuracy: false // may cause errors if true
       };
     }
-})
+    $.ajax({
+        url       : 'https://api.clusterpoint.com/658/Promotions/_list_first/30/0.json',
+        type      : 'POST',
+        dataType  : 'json',
+        data      : '{"query": "<name>Test</name>"}',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Basic ' + btoa('yesh0907@hotmail.com:fishook123'));
+            console.log("Logged In");
+        },
+        success: function (data) {
+            console.log(data);
+            if (typeof success != 'undefined') {
+                success(data);
+            }
+            $scope.data= data
+        },
+        fail: function (data) {
+            alert(data.error);
+            if (typeof fail != 'undefined') {
+                fail(data);
+            }
+        }
+    });
+    })
 
 .controller('ChatsCtrl', function($scope, $stateParams, Chats) {
-    $scope.chat = Chats.get($stateParams.chatId);
+
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
