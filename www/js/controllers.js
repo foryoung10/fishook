@@ -32,13 +32,13 @@ angular.module('starter.controllers', [])
         xhr.setRequestHeader('Authorization', 'Basic ' + btoa('yesh0907@hotmail.com:fishook123'));
         console.log("Logged In");
       },
-      success   : function (data) {
+      success: function (data) {
         console.log(data);
         if (typeof success != 'undefined') {
           success(data);
         }
       },
-      fail      : function (data) {
+      fail: function (data) {
         alert(data.error);
         if (typeof fail != 'undefined') {
           fail(data);
