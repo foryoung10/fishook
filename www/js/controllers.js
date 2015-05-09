@@ -23,7 +23,6 @@ angular.module('starter.controllers', [])
       };
     }
 
-    var getURL = 'https://api.clusterpoint.com/658/Promotions/_list_first/30/0.json';
     $.ajax({
       url       : 'https://api.clusterpoint.com/658/Promotions/_list_first/30/0.json',
       type      : 'POST',
