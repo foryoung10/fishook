@@ -13,6 +13,7 @@ angular.module('starter.controllers', [])
             $scope.long = position.coords.longitude
           }, function (err) {
             // error
+            console.error(err);
           });
 
 
