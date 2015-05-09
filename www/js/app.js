@@ -49,36 +49,45 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     }
   })
 
-  .state('tab.chats', {
-      url: '/chats',
+  .state('tab.list', {
+      url: '/home/:ID',
       views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
+        'tab-home': {
+          templateUrl: 'templates/list.html',
+          controller: 'ListCtrl'
         }
       }
     })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
+    .state('tab.saved', {
+      url: '/saved',
       views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
+        'tab-saved': {
+          templateUrl: 'templates/saved.html',
+          controller: 'SavedCtrl'
         }
       }
     })
-
-  .state('tab.account', {
-    url: '/account',
+    .state('tab.fish', {
+      url: '/fish',
+      views: {
+        'tab-fish': {
+          templateUrl: 'templates/fish.html',
+          controller: 'FishCtrl'
+        }
+      }
+    })
+  .state('tab.loading', {
+    url: '/loading',
     views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
+      'tab-loading': {
+        templateUrl: 'templates/loading.html',
+        controller: 'LoadCtrl'
       }
     }
-  });
+  })
+
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/home');
+  $urlRouterProvider.otherwise('/tab/fish');
 
 });
