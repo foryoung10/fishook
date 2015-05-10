@@ -1,15 +1,16 @@
 <ion-view view-title="Home">
- <ion-content class="padding">
+ <ion-content class="padding" style="padding-top: 10%; background-color: transparent;">
   <!--<button class="button button-royal" ng-click="getLocation()">Get Location</button>-->
   <!--&lt;!&ndash;{{lat}}&ndash;&gt;-->
   <!--&lt;!&ndash;{{long}}&ndash;&gt;-->
   <!--{{data}}-->
-  <ion-item class="item item-thumbnail-left item-text-wrap" ng-repeat="d in data.documents" href="#/tab/home/{{d.id}}">
-    <img ng-src ={{d.IMG_PRODUCT}} />
-    <h1 style="font-size: 150%;">{{d.Name}}</h1>
-    <h3>{{d.Discount}}</h3>
-    <p>{{d.Expiry_Date}}</p>
-   </a>
+  <ion-item ng-repeat="d in data.documents" href="#/tab/home/{{d.id}}">
+     <div class="item item-thumbnail-left item-text-wrap item-divider" style="width: 110%;">
+         <img ng-src ={{d.IMG_PRODUCT}} />
+         <h1 style="font-size: 150%;">{{d.Name}}</h1>
+         <h3>{{d.Discount}}</h3>
+         <p>{{d.Expiry_Date}}</p>
+     </div>
   </ion-item>
 
  </ion-content>

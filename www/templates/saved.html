@@ -6,7 +6,19 @@
 -->
 <ion-view view-title="Saved">
   <ion-content class="padding">
-    <img ng-src="img/small hook.png" ng-click="fish()"/>
+    <h1>{{saved}}</h1>
+    <ion-item ng-repeat="d in data.documents" href="#/tab/home/{{d.id}}">
+      <div class="item item-thumbnail-left item-text-wrap item-divider" style="width: 110%;">
+        <img ng-src ={{d.IMG_PRODUCT}} />
+        <h1 style="font-size: 150%;">{{d.Name}}</h1>
+        <h3>{{d.Discount}}</h3>
+        <p>{{d.Expiry_Date}}</p>
+      </div>
+    </ion-item>
+
+    <div class = "img-bottom">
+      <img ng-src="img/smallhook.png" style="width:80%" ng-click="fish()"  />
+    </div>
   </ion-content>
 
 

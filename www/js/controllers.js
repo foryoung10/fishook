@@ -109,8 +109,41 @@ angular.module('starter.controllers', [])
     }
 })
 
-.controller('SavedCtrl', function($scope, $stateParams, $state) {
-    $scope.fish =function() {
+.controller('SavedCtrl', function($scope, $stateParams, $state, $http,$window) {
+        var req = {
+            method: 'POST',
+            url: 'https://api.clusterpoint.com/658/Promotions/_list_first/30/0.json',
+            headers: {
+                'Content-Type': undefined,
+                'Authorization': 'Basic ' + btoa('yesh0907@hotmail.com:fishook123')
+            },
+            data      : '{"query": "<name>Test</name>"}'
+        }
+        $http(req)
+            .success(function(data, status, headers, config) {
+                // this callback will be called asynchronously
+                // when the response is available
+                $scope.data = data
+                console.log('success')
+            })
+            .error(function(data, status, headers, config) {
+                /* /	// called asynchronously if an error occurs
+                 */ // or server returns response with an error status.
+            });
+        saved = [
+                        { "id": 1 }
+                    ]
+        //console.log(Saved)
+        $scope.saved =saved
+        $window.localStorage['Saved'] = JSON.stringify(saved);
+        console.log($window.localStorage['Saved'])
+        var list = JSON.parse($window.localStorage['Saved'] || '{}');
+        $scope.saved.push({
+            id: 2
+        });
+
+
+        $scope.fish =function() {
         $state.go("tab.fish");
     }
 
@@ -132,6 +165,12 @@ angular.module('starter.controllers', [])
             $state.go('tab.loading')
             //$scope.showRod=true;
             // //close the popup after 3 seconds for some reason
+        }
+
+        $scope.swipe = function() {
+            console.log("swiped");
+            //$cordovaVibration.vibrate(1000);
+            $state.go('tab.loading')
         }
 
 })
