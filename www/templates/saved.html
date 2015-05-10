@@ -6,8 +6,7 @@
 -->
 <ion-view view-title="Saved">
   <ion-content class="padding">
-    <h1>{{saved}}</h1>
-    <ion-item ng-repeat="d in data.documents" href="#/tab/home/{{d.id}}">
+    <ion-item ng-repeat="d in data[0]" href="#/tab/home/{{d.id}}">
       <div class="item item-thumbnail-left item-text-wrap item-divider" style="width: 110%;">
         <img ng-src ={{d.IMG_PRODUCT}} />
         <h1 style="font-size: 150%;">{{d.Name}}</h1>

@@ -4,7 +4,7 @@
     <!--{{data.documents[ID]}}-->
     <!--{{data.documents[ID].Name}}-->
 
-    <div class="list card">
+    <div class="list card" ng-show="contentLoaded">
 
       <!--<div class="item item-avatar">-->
         <!--<img ng-src={{data.documents[ID].IMG_BANNER}}>-->
@@ -22,7 +22,7 @@
       <!--</a>-->
 
     </div>
-    <button class="button button-large button-positive" style="font-size:3.5em; min-width:100%; min-height:50%; line-height:180%" ng-click="save()">
+    <button class="button button-large button-positive" style="font-size:3.5em; min-width:100%; min-height:50%; line-height:180%" ng-click="save()" ng-show="contentLoaded">
         SAVE COUPON
    </button>
 <div class = "bottom-padding"></div>

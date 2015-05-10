@@ -3,7 +3,8 @@ angular.module('starter.controllers', [])
 .controller('MainCtrl', function($scope) {})
 
 .controller('LocationCtrl', function($scope, $http, $cordovaGeolocation, $cordovaDeviceMotion) {
-      console.log("In LocationCtrl")
+      console.log("In LocationCtrl");
+        $scope.everythingLoaded = false;
       $scope.getLocation = function() {
       var posOptions = {timeout: 10000, enableHighAccuracy: false};
       $cordovaGeolocation
@@ -14,7 +15,9 @@ angular.module('starter.controllers', [])
           }, function (err) {
             // error
           });
-
+    $scope.random= function() {
+        return 0.5-Math.random()
+    }
 
       var watchOptions = {
         frequency: 1000,
@@ -36,8 +39,9 @@ angular.module('starter.controllers', [])
             .success(function(data, status, headers, config) {
                 // this callback will be called asynchronously
                 // when the response is available
-                $scope.data = data
-                console.log('success')
+                $scope.data = data;
+                console.log('success');
+                $scope.everythingLoaded = true;
             })
             .error(function(data, status, headers, config) {
                 /* /	// called asynchronously if an error occurs
@@ -75,10 +79,11 @@ angular.module('starter.controllers', [])
 
     })
 
-.controller('ListCtrl', function($scope, $stateParams, $http, $state, $ionicPopup) {
-    console.log('listCtrl')
-    $scope.ID =  $stateParams.ID
-    console.log($stateParams.ID)
+.controller('ListCtrl', function($scope, $stateParams, $http, $state, $ionicPopup, $window) {
+        $scope.contentLoaded = false;
+    console.log('listCtrl');
+    $scope.ID =  $stateParams.ID;
+    console.log($stateParams.ID);
     var req = {
         method: 'POST',
         url: 'https://api.clusterpoint.com/658/Promotions/_lookup/'+$stateParams.ID+'.json',
@@ -94,6 +99,7 @@ angular.module('starter.controllers', [])
             // when the response is available
             $scope.data = data
             console.log('success')
+            $scope.contentLoaded = true;
         })
         .error(function(data, status, headers, config) {
             /* /	// called asynchronously if an error occurs
@@ -101,8 +107,16 @@ angular.module('starter.controllers', [])
         });
     $scope.save = function()    {
         $state.go("tab.saved");
+        var list = JSON.parse($window.localStorage['Saved'] || '{}');
+        console.log(list)
+        list.push({
+            id: $scope.ID
+        });
+        $window.localStorage['Saved'] = JSON.stringify(list);
+
+
         $ionicPopup.alert({
-            title: 'Alert',
+            title: 'Fishook',
             template: 'Coupon Saved'
         });
 
@@ -110,42 +124,53 @@ angular.module('starter.controllers', [])
 })
 
 .controller('SavedCtrl', function($scope, $stateParams, $state, $http,$window) {
-        var req = {
-            method: 'POST',
-            url: 'https://api.clusterpoint.com/658/Promotions/_list_first/30/0.json',
-            headers: {
-                'Content-Type': undefined,
-                'Authorization': 'Basic ' + btoa('yesh0907@hotmail.com:fishook123')
-            },
-            data      : '{"query": "<name>Test</name>"}'
-        }
-        $http(req)
-            .success(function(data, status, headers, config) {
-                // this callback will be called asynchronously
-                // when the response is available
-                $scope.data = data
-                console.log('success')
-            })
-            .error(function(data, status, headers, config) {
-                /* /	// called asynchronously if an error occurs
-                 */ // or server returns response with an error status.
-            });
-        saved = [
-                        { "id": 1 }
-                    ]
-        //console.log(Saved)
-        $scope.saved =saved
-        $window.localStorage['Saved'] = JSON.stringify(saved);
-        console.log($window.localStorage['Saved'])
-        var list = JSON.parse($window.localStorage['Saved'] || '{}');
-        $scope.saved.push({
-            id: 2
+        $scope.$on( "$ionicView.enter", function( scopes, states ) {
+            console.log('Entered Loading View')
+            load()
         });
 
-
-        $scope.fish =function() {
-        $state.go("tab.fish");
-    }
+        load = function() {
+            $scope.data=[];
+            var items = []
+            var list = JSON.parse($window.localStorage['Saved'] || '{}');
+            console.log(list.id)
+            for (var i = 0; i < list.length; i++) {
+                console.log('a')
+                console.log(list[i].id)
+                var req = {
+                    method: 'POST',
+                    url: 'https://api.clusterpoint.com/658/Promotions/_lookup/'+list[i].id+'.json',
+                    headers: {
+                        'Content-Type': undefined,
+                        'Authorization': 'Basic ' + btoa('yesh0907@hotmail.com:fishook123')
+                    },
+                    data      : '{"query": "<name>Test</name>"}'
+                }
+                $http(req)
+                    .success(function(data, status, headers, config) {
+                        // this callback will be called asynchronously
+                        // when the response is available
+                        console.log(data)
+                        //$scope.data.push({id:1
+                        items.push(data.documents);
+                        console.log(items)
+                    })
+                    .error(function(data, status, headers, config) {
+                        /* /	// called asynchronously if an error occurs
+                         */ // or server returns response with an error status.
+                    });
+            }
+            $scope.data = items
+            //var coupons = []
+            //for(i=0; i<items.length; i++) {
+            //    console.log(items)
+            //    coupons.push(items[i])
+            //}
+            //$scope.data = coupons
+        }
+        $scope.fish = function(){
+            $state.go('tab.fish')
+        }
 
 })
 

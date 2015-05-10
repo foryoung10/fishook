@@ -17,7 +17,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleLightContent();
-    }
+    };
+    saved = [
+      { "id": 1 }
+    ]
+    //co nsole.log(Saved)
+    window.localStorage['Saved'] = JSON.stringify(saved);
+    console.log(window.localStorage['Saved']);
+    //var list = JSON.parse(window.localStorage['Saved'] || '{}');
+
+
 
   });
 })
