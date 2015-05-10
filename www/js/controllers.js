@@ -118,16 +118,16 @@ angular.module('starter.controllers', [])
 
 .controller('FishCtrl', function($scope, $cordovaDeviceMotion, $window, $cordovaVibration, $timeout, $state) {
         var myShakeEvent = new Shake({
-            threshold: 25, // optional shake strength threshold
+            threshold: 15, // optional shake strength threshold
             timeout: 1000 // optional, determines the frequency of event generation
         });
 
         myShakeEvent.start();
-       
+
         $window.addEventListener('shake', shakeEventDidOccur, false);
         //function to call when shake occurs
         function shakeEventDidOccur () {
-            $cordovaVibration.vibrate(2000);
+            $cordovaVibration.vibrate(1000);
             //put your own code here etc.
             $state.go('tab.loading')
             //$scope.showRod=true;
@@ -136,13 +136,18 @@ angular.module('starter.controllers', [])
 
 })
 .controller('LoadCtrl', function($scope, $stateParams, $state, $timeout) {
-        do {
-            $timeout(function () {
-                $state.go('tab.home') //close the popup after 3 seconds for some reason
-            }, 2000);
-            break;
-        }while(true)
+        $scope.$on( "$ionicView.enter", function( scopes, states ) {
+            console.log('Entered Loading View')
+            load()
+        });
 
+        var load= function() {
+            console.log('loading')
+            $state.go($state.current, {}, {reload: true});
+            $timeout(function () {
+                $state.transitionTo('tab.home') //close the popup after 3 seconds for some reason
+            }, 2000);
+        }
     });
 
 //document.addEventListener("deviceready", function () {
