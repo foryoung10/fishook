@@ -1,5 +1,21 @@
 var load;
 
+function saveData(data) {
+    var list;
+
+    if (window.localStorage.getItem('Saved') === null) {
+        list = [];
+    }
+    else {
+        list = JSON.parse(window.localStorage.getItem('Saved'));
+    }
+
+    list.push(data);
+    console.log(list);
+
+    window.localStorage.setItem('Saved', JSON.stringify(list));
+}
+
 angular.module('starter.controllers', [])
 
     .controller('MainCtrl', function ($scope) { })
@@ -42,7 +58,6 @@ angular.module('starter.controllers', [])
         // this callback will be called asynchronously
         // when the response is available
         $scope.data = data;
-        console.log('success');
         $scope.everythingLoaded = true;
     })
         .error(function (data, status, headers, config) {
@@ -51,11 +66,9 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('ListCtrl', function ($scope, $stateParams, $http, $state, $ionicPopup, $window) {
+    .controller('ListCtrl', function ($scope, $stateParams, $http, $state, $ionicPopup) {
     $scope.contentLoaded = false;
-    console.log('listCtrl');
     $scope.ID = $stateParams.ID;
-    console.log($stateParams.ID);
     var req = {
         method: 'POST',
         url: 'https://api.clusterpoint.com/658/Promotions/_lookup/' + $stateParams.ID + '.json',
@@ -70,10 +83,7 @@ angular.module('starter.controllers', [])
         // this callback will be called asynchronously
         // when the response is available
         $scope.data = data;
-        console.log('success');
         $scope.contentLoaded = true;
-        $window.localStorage['Saved'] = JSON.stringify(data);
-        console.log($window.localStorage['Saved']);
     })
         .error(function (data, status, headers, config) {
         /* /	// called asynchronously if an error occurs
@@ -81,32 +91,25 @@ angular.module('starter.controllers', [])
     });
     $scope.save = function () {
         $state.go("tab.saved");
-        var list = JSON.parse($window.localStorage['Saved'] || '{}');
-        console.log(list);
-        list.push({
+        saveData({
             id: $scope.ID
         });
         $ionicPopup.alert({
             title: 'Fishook',
             template: 'Coupon Saved'
         });
-
     };
 })
 
-.controller('SavedCtrl', function ($scope, $stateParams, $state, $http, $window) {
+    .controller('SavedCtrl', function ($scope, $stateParams, $state, $http, $cordovaSQLite) {
     $scope.$on("$ionicView.enter", function (scopes, states) {
-        console.log('Entered Loading View');
         load();
     });
 
     load = function () {
         $scope.data = [];
-        var items = [];
-        var list = JSON.parse($window.localStorage['Saved'] || '{}');
-        console.log(list.id);
+        var list = JSON.parse(window.localStorage.getItem('Saved'));
         for (var i = 0; i < list.length; i++) {
-            console.log(list[i].id);
             var req = {
                 method: 'POST',
                 url: 'https://api.clusterpoint.com/658/Promotions/_lookup/' + list[i].id + '.json',
@@ -115,36 +118,30 @@ angular.module('starter.controllers', [])
                     'Authorization': 'Basic ' + btoa('yesh0907@hotmail.com:fishook123')
                 },
                 data: '{"query": "<name>Test</name>"}'
-            }
+            };
+
+            $scope.ID = [];
+            console.log(list[i].id);
+            $scope.ID.push(list[i].id);
+            console.log($scope.ID);
+            
+            $scope.i = i;
+            
             $http(req)
                 .success(function (data, status, headers, config) {
-                // this callback will be called asynchronously
-                // when the response is available
-                console.log(data)
-                //$scope.data.push({id:1
-                items.push(data[i]);
-                console.log(items)
-            })
+                $scope.data.push(data.documents);
+                console.log($scope.data);
+                })
                 .error(function (data, status, headers, config) {
-                /* /	// called asynchronously if an error occurs
-                 */ // or server returns response with an error status.
             });
         }
-        $scope.data = items;
-        //var coupons = []
-        //for(i=0; i<items.length; i++) {
-        //    console.log(items)
-        //    coupons.push(items[i])
-        //}
-        //$scope.data = coupons
     };
     $scope.fish = function () {
-        $state.go('tab.fish')
-    }
-
+        $state.go('tab.fish');
+    };
 })
 
-.controller('FishCtrl', function ($scope, $cordovaDeviceMotion, $window, $cordovaVibration, $timeout, $state) {
+    .controller('FishCtrl', function ($scope, $cordovaDeviceMotion, $window, $cordovaVibration, $timeout, $state) {
     var myShakeEvent = new Shake({
         threshold: 15, // optional shake strength threshold
         timeout: 1000 // optional, determines the frequency of event generation
@@ -161,28 +158,26 @@ angular.module('starter.controllers', [])
 
     $window.addEventListener('deviceshake', function () {
         $cordovaVibration.vibrate(1000);
-        $state.go('tab.loading')
+        $state.go('tab.loading');
     }, false);
 
     $scope.swipe = function () {
         console.log("swiped");
-        $cordovaVibration.vibrate(1000);
+        //$cordovaVibration.vibrate(1000);
         $state.go('tab.loading');
     };
 
 })
     .controller('LoadCtrl', function ($scope, $stateParams, $state, $timeout) {
     $scope.$on("$ionicView.enter", function (scopes, states) {
-        console.log('Entered Loading View');
         load();
     });
 
     var load = function () {
-        console.log('loading')
         $state.go($state.current, {}, { reload: true });
         $timeout(function () {
             $state.transitionTo('tab.home'); //close the popup after 3 seconds for some reason
         }, 2000);
-    }
+    };
 });
 

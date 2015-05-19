@@ -5,9 +5,10 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','ngCordova'])
 
-.run(function($ionicPlatform) {
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
+
+    .run(function ($ionicPlatform) {
   $ionicPlatform.ready(function () {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -18,20 +19,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
       // org.apache.cordova.statusbar required
       StatusBar.styleLightContent();
     };
-    saved = [
-      { "id": 1 }
-    ]
-    //co nsole.log(Saved)
-    window.localStorage['Saved'] = JSON.stringify(saved);
-    console.log(window.localStorage['Saved']);
-    //var list = JSON.parse(window.localStorage['Saved'] || '{}');
-
-     
-    
-  });
+    });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+    .config(function ($stateProvider, $urlRouterProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -48,7 +39,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
 
   // Each tab has its own nav history stack:
 
-  .state('tab.home', {
+        .state('tab.home', {
     url: '/home',
     views: {
       'tab-home': {
@@ -58,34 +49,34 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     }
   })
 
-  .state('tab.list', {
-      url: '/home/:ID',
-      views: {
-        'tab-home': {
-          templateUrl: 'templates/list.html',
-          controller: 'ListCtrl'
+        .state('tab.list', {
+        url: '/home/:ID',
+        views: {
+            'tab-home': {
+        templateUrl: 'templates/list.html',
+        controller: 'ListCtrl'
+            }
         }
-      }
     })
     .state('tab.saved', {
-      url: '/saved',
-      views: {
-        'tab-saved': {
-          templateUrl: 'templates/saved.html',
-          controller: 'SavedCtrl'
+        url: '/saved',
+        views: {
+            'tab-saved': {
+        templateUrl: 'templates/saved.html',
+        controller: 'SavedCtrl'
+            }
         }
-      }
     })
     .state('tab.fish', {
-      url: '/fish',
-      views: {
-        'tab-fish': {
-          templateUrl: 'templates/fish.html',
-          controller: 'FishCtrl'
+        url: '/fish',
+        views: {
+            'tab-fish': {
+        templateUrl: 'templates/fish.html',
+        controller: 'FishCtrl'
+            }
         }
-      }
     })
-  .state('tab.loading', {
+        .state('tab.loading', {
     url: '/loading',
     views: {
       'tab-loading': {
@@ -98,5 +89,4 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/fish');
-
 });
