@@ -5,12 +5,14 @@ function saveData(data) {
 
     if (window.localStorage.getItem('Saved') === null) {
         list = [];
-    }
-    else {
+    } else {
         list = JSON.parse(window.localStorage.getItem('Saved'));
     }
 
     list.push(data);
+    list.sort(function (a, b) {
+        return a.id - b.id;
+    });
     console.log(list);
 
     window.localStorage.setItem('Saved', JSON.stringify(list));
@@ -18,19 +20,43 @@ function saveData(data) {
 
 angular.module('starter.controllers', [])
 
-    .controller('MainCtrl', function ($scope) { })
+.filter('orderObjectBy', function () {
+    return function (input, attribute) {
+        if (!angular.isObject(input)) {
+            return input;
+        }
 
-    .controller('LocationCtrl', function ($scope, $http, $cordovaGeolocation, $cordovaDeviceMotion) {
-    console.log("In LocationCtrl");
+        var array = [];
+        for (objectKeys in array) {
+            array.push(input[objectKeys]);
+        }
+
+        array.sort(function (a, b) {
+            a = parseInt(a[attribute]);
+            b = parseInt(b[attribute]);
+
+            return a - b;
+        });
+
+        return array;
+    }
+})
+
+.controller('MainCtrl', function ($scope) {})
+
+.controller('LocationCtrl', function ($scope, $http, $cordovaGeolocation, $cordovaDeviceMotion) {
     $scope.everythingLoaded = false;
     $scope.getLocation = function () {
-        var posOptions = { timeout: 10000, enableHighAccuracy: false };
+        var posOptions = {
+            timeout: 10000,
+            enableHighAccuracy: false
+        };
         $cordovaGeolocation
             .getCurrentPosition(posOptions)
             .then(function (position) {
-            $scope.lat = position.coords.latitude;
-            $scope.long = position.coords.longitude;
-        }, function (err) {
+                $scope.lat = position.coords.latitude;
+                $scope.long = position.coords.longitude;
+            }, function (err) {
                 // error
             });
         $scope.random = function () {
@@ -55,18 +81,18 @@ angular.module('starter.controllers', [])
     };
     $http(req)
         .success(function (data, status, headers, config) {
-        // this callback will be called asynchronously
-        // when the response is available
-        $scope.data = data;
-        $scope.everythingLoaded = true;
-    })
+            // this callback will be called asynchronously
+            // when the response is available
+            $scope.data = data;
+            $scope.everythingLoaded = true;
+        })
         .error(function (data, status, headers, config) {
-        /* /	// called asynchronously if an error occurs
-         */ // or server returns response with an error status.
-    });
+            /* /	// called asynchronously if an error occurs
+             */ // or server returns response with an error status.
+        });
 })
 
-    .controller('ListCtrl', function ($scope, $stateParams, $http, $state, $ionicPopup) {
+.controller('ListCtrl', function ($scope, $stateParams, $http, $state, $ionicPopup) {
     $scope.contentLoaded = false;
     $scope.ID = $stateParams.ID;
     var req = {
@@ -80,15 +106,15 @@ angular.module('starter.controllers', [])
     };
     $http(req)
         .success(function (data, status, headers, config) {
-        // this callback will be called asynchronously
-        // when the response is available
-        $scope.data = data;
-        $scope.contentLoaded = true;
-    })
+            // this callback will be called asynchronously
+            // when the response is available
+            $scope.data = data;
+            $scope.contentLoaded = true;
+        })
         .error(function (data, status, headers, config) {
-        /* /	// called asynchronously if an error occurs
-         */ // or server returns response with an error status.
-    });
+            /* /	// called asynchronously if an error occurs
+             */ // or server returns response with an error status.
+        });
     $scope.save = function () {
         $state.go("tab.saved");
         saveData({
@@ -101,7 +127,7 @@ angular.module('starter.controllers', [])
     };
 })
 
-    .controller('SavedCtrl', function ($scope, $stateParams, $state, $http, $cordovaSQLite) {
+.controller('SavedCtrl', function ($scope, $stateParams, $state, $http) {
     $scope.$on("$ionicView.enter", function (scopes, states) {
         load();
     });
@@ -109,6 +135,7 @@ angular.module('starter.controllers', [])
     load = function () {
         $scope.data = [];
         var list = JSON.parse(window.localStorage.getItem('Saved'));
+
         for (var i = 0; i < list.length; i++) {
             var req = {
                 method: 'POST',
@@ -120,20 +147,18 @@ angular.module('starter.controllers', [])
                 data: '{"query": "<name>Test</name>"}'
             };
 
-            $scope.ID = [];
-            console.log(list[i].id);
-            $scope.ID.push(list[i].id);
-            console.log($scope.ID);
-            
-            $scope.i = i;
-            
             $http(req)
                 .success(function (data, status, headers, config) {
-                $scope.data.push(data.documents);
-                console.log($scope.data);
+                    $scope.data.push(data.documents);
+                    console.log($scope.data);
                 })
-                .error(function (data, status, headers, config) {
-            });
+                .error(function (data, status, headers, config) {});
+        }
+        
+        for (var j = 0; j < list.length; j++) {
+            $scope.ID = [];
+            $scope.ID[j].push(list[j].id);
+            console.log($scope.ID);
         }
     };
     $scope.fish = function () {
@@ -141,43 +166,43 @@ angular.module('starter.controllers', [])
     };
 })
 
-    .controller('FishCtrl', function ($scope, $cordovaDeviceMotion, $window, $cordovaVibration, $timeout, $state) {
-    var myShakeEvent = new Shake({
-        threshold: 15, // optional shake strength threshold
-        timeout: 1000 // optional, determines the frequency of event generation
-    });
+.controller('FishCtrl', function ($scope, $cordovaDeviceMotion, $window, $cordovaVibration, $timeout, $state) {
+        var myShakeEvent = new Shake({
+            threshold: 15, // optional shake strength threshold
+            timeout: 1000 // optional, determines the frequency of event generation
+        });
 
-    myShakeEvent.start();
+        myShakeEvent.start();
 
-    $window.addEventListener('shake', shakeEventDidOccur, false);
-    //function to call when shake occurs
-    function shakeEventDidOccur() {
-        $cordovaVibration.vibrate(1000);
-        $state.go('tab.loading');
-    }
+        $window.addEventListener('shake', shakeEventDidOccur, false);
+        //function to call when shake occurs
+        function shakeEventDidOccur() {
+            $cordovaVibration.vibrate(1000);
+            $state.go('tab.loading');
+        }
 
-    $window.addEventListener('deviceshake', function () {
-        $cordovaVibration.vibrate(1000);
-        $state.go('tab.loading');
-    }, false);
+        $window.addEventListener('deviceshake', function () {
+            $cordovaVibration.vibrate(1000);
+            $state.go('tab.loading');
+        }, false);
 
-    $scope.swipe = function () {
-        console.log("swiped");
-        //$cordovaVibration.vibrate(1000);
-        $state.go('tab.loading');
-    };
+        $scope.swipe = function () {
+            console.log("swiped");
+            $state.go('tab.loading');
+        };
 
-})
+    })
     .controller('LoadCtrl', function ($scope, $stateParams, $state, $timeout) {
-    $scope.$on("$ionicView.enter", function (scopes, states) {
-        load();
+        $scope.$on("$ionicView.enter", function (scopes, states) {
+            load();
+        });
+
+        var load = function () {
+            $state.go($state.current, {}, {
+                reload: true
+            });
+            $timeout(function () {
+                $state.transitionTo('tab.home'); //close the popup after 3 seconds for some reason
+            }, 2000);
+        };
     });
-
-    var load = function () {
-        $state.go($state.current, {}, { reload: true });
-        $timeout(function () {
-            $state.transitionTo('tab.home'); //close the popup after 3 seconds for some reason
-        }, 2000);
-    };
-});
-
