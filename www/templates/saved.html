@@ -6,13 +6,12 @@
 -->
 <ion-view view-title="Saved">
   <ion-content class="padding">
-    <ion-item ng-repeat="d in data track by $index" href="#/tab/home/{{d.id}}">
+    <ion-item ng-repeat="d in data[0]" href="#/tab/home/{{d.id}}">
       <div class="item item-thumbnail-left item-text-wrap item-divider" style="width: 107%;">
-        <img ng-src ={{d[ID[0]].IMG_PRODUCT}} />
-        <h1 style="font-size: 150%;">{{d[ID[$index]].Name}}</h1>
-        <h3>{{d[ID[$index]].Discount}}</h3>
-        <p>{{d[ID[$index]].Expiry_Date}}</p>
-        {{$index}}
+        <img ng-src ={{d.IMG_PRODUCT}} />
+        <h1 style="font-size: 150%;">{{d.Name}}</h1>
+        <h3>{{d.Discount}}</h3>
+        <p>{{d.Expiry_Date}}</p>
       </div>
     </ion-item>
     <div>
